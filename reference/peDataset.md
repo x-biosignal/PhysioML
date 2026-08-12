@@ -1,0 +1,69 @@
+# Create a case-aware torch Dataset
+
+Converts a PhysioExperiment assay to fixed channel-by-time items. Split
+cases before calling this function, fit normalization on training cases
+only, and pass `normalization_stats` to validation and prediction
+datasets. Class tensors are zero-based `torch_long`; input and
+regression tensors are `torch_float32`. A one-item batch always retains
+its batch dimension.
+
+## Usage
+
+``` r
+peDataset(
+  x,
+  targets = NULL,
+  assay_name = NULL,
+  cases = NULL,
+  channels = NULL,
+  window_samples = NULL,
+  stride_samples = NULL,
+  normalization = c("none", "zscore", "robust"),
+  normalization_stats = NULL,
+  task = c("classification", "regression"),
+  class_levels = NULL,
+  dtype = "float32"
+)
+```
+
+## Arguments
+
+- x:
+
+  A `PhysioExperiment`.
+
+- targets:
+
+  Optional one-per-selected-case target vector.
+
+- assay_name, cases, channels:
+
+  Exact assay and identity selections.
+
+- window_samples, stride_samples:
+
+  Optional complete-window dimensions.
+
+- normalization:
+
+  Exact normalization method.
+
+- normalization_stats:
+
+  Frozen statistics from a training dataset.
+
+- task:
+
+  Exact task name.
+
+- class_levels:
+
+  Optional ordered classification labels.
+
+- dtype:
+
+  Currently exactly `"float32"`.
+
+## Value
+
+A `physio_torch_dataset`.
