@@ -1,7 +1,7 @@
 # Predict through ONNX Runtime on CPU
 
 Materializes a validated raw ONNX payload only for the current call,
-disables provider fallback, and reuses the WS10-28 prediction formatter.
+disables provider fallback, and reuses the shared prediction formatter.
 
 ## Usage
 
