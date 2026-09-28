@@ -36,3 +36,7 @@
   : Fit or apply the ROCKET transform
 - [`trainModel()`](https://x-biosignal.github.io/PhysioML/reference/trainModel.md)
   : Train a reference torch model through luz
+- [`validateSubjectSplit()`](https://x-biosignal.github.io/PhysioML/reference/validateSubjectSplit.md)
+  : Validate a split intended to generalize to unseen subjects
+- [`withCaseData()`](https://x-biosignal.github.io/PhysioML/reference/withCaseData.md)
+  : Attach explicit subject identity to signal cases or feature rows

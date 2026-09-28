@@ -11,10 +11,7 @@ clinically validate a model.
 
 install.packages(
   "PhysioML",
-  repos = c(
-    "https://x-biosignal.r-universe.dev",
-    "https://cloud.r-project.org"
-  )
+  repos = c("https://x-biosignal.r-universe.dev", BiocManager::repositories())
 )
 ```
 

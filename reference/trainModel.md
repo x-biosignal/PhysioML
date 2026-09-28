@@ -1,9 +1,14 @@
 # Train a reference torch model through luz
 
-The caller supplies case-disjoint training and validation Datasets.
-Validation must reuse training normalization statistics. CPU execution,
-no worker processes, and deterministic caller-state restoration are
-enforced in this implementation.
+The caller supplies case-disjoint training and validation Datasets. When
+subject metadata is attached with
+[`withCaseData()`](https://x-biosignal.github.io/PhysioML/reference/withCaseData.md),
+both datasets must carry it and subjects must also be disjoint. Legacy
+unannotated inputs retain case-only checking; missing metadata does not
+establish subject separation. Validation must reuse training
+normalization statistics. CPU execution, no worker processes, and
+deterministic caller-state restoration are enforced in this
+implementation.
 
 ## Usage
 

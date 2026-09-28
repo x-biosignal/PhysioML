@@ -30,7 +30,8 @@ peDataset(
 
 - x:
 
-  A `PhysioExperiment`.
+  A `PhysioExperiment`; attach subject keys with
+  [`withCaseData()`](https://x-biosignal.github.io/PhysioML/reference/withCaseData.md).
 
 - targets:
 

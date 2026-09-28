@@ -20,7 +20,7 @@ catch22(x, assay_name = NULL, channels = NULL, cases = NULL, catch24 = FALSE)
 - assay_name:
 
   `NULL` for
-  [`PhysioCore::defaultAssay()`](https://x-biosignal.github.io/PhysioCore//reference/defaultAssay.html)
+  [`PhysioCore::defaultAssay()`](https://x-biosignal.r-universe.dev/PhysioExperiment/reference/defaultAssay.html)
   or an exact assay name.
 
 - channels:
