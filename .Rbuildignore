@@ -1,0 +1,5 @@
+^data-raw$
+^inst/python/__pycache__($|/)
+^inst/python/.*[.]py[co]$
+^CONTRIBUTING\.md$
+^CODE_OF_CONDUCT\.md$

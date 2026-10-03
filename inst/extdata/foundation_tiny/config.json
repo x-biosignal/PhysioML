@@ -1,0 +1,13 @@
+{
+  "adapter": "physioml_tiny",
+  "feature_order": [
+    "mean",
+    "sd",
+    "minimum",
+    "maximum"
+  ],
+  "input_axes": "batch,channel,time",
+  "minimum_time_samples": 8,
+  "output_width": 6,
+  "schema_version": "1.0.0"
+}

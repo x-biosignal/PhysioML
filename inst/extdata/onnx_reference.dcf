@@ -1,0 +1,11 @@
+Fixture: package-owned deterministic CNN1D ONNX parity fixture
+Redistribution: MIT package-owned inputs and initialized weights
+Generator: data-raw/generate-onnx-reference.R
+PythonVerifier: data-raw/generate_onnx_reference.py
+Rtorch: 0.17.0
+LibTorch: 2.8.0
+Python: 3.12.3
+PythonTorch: 2.8.0+cpu
+ONNX: 1.22.0
+ONNXRuntime: 1.28.0
+Opset: 17

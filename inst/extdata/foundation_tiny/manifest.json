@@ -1,0 +1,38 @@
+{
+  "adapter": "moment",
+  "adapter_version": "1.0.0",
+  "checkpoint_format": "safetensors",
+  "download_consent": false,
+  "files": [
+    {
+      "path": "SHA256",
+      "sha256": "0997a19abb608f203765ae360b0077c9b22c8fed321fd678a4fe9d7aa4f938aa",
+      "size": 320
+    },
+    {
+      "path": "config.json",
+      "sha256": "a253bbe33069eaf33227094668346b11a47f0fc1684aa4d0d1b6c03e25478b20",
+      "size": 227
+    },
+    {
+      "path": "embeddings.csv",
+      "sha256": "74750aa898963d05ac50438877fada3ba0896075340f0d179e87d2bc3a368d9e",
+      "size": 7727
+    },
+    {
+      "path": "inputs.csv",
+      "sha256": "75c9065449d00f41ed3b16ee043a650317467fbfe6b46454d9dd070c1cb8f95e",
+      "size": 62246
+    },
+    {
+      "path": "model.safetensors",
+      "sha256": "d040cbb769328f4a1d9dfe50d9b7fba8e37d0351aa74679c885e5c8d67fbc2dd",
+      "size": 312
+    }
+  ],
+  "license": "MIT",
+  "model_id": "physioml/foundation-tiny",
+  "revision": "eba1a9334849d25ba420c25c4157d0743409726b",
+  "schema_version": "1.0.0",
+  "sources": "https://github.com/x-biosignal/PhysioML"
+}

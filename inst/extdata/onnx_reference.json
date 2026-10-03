@@ -1,0 +1,112 @@
+{
+  "architecture": "cnn1d",
+  "backend_versions": {
+    "libtorch": "2.8.0",
+    "onnx": "1.22.0",
+    "onnxruntime": "1.28.0",
+    "python": "3.12.3",
+    "python_torch": "2.8.0+cpu",
+    "r_torch": "0.17.0"
+  },
+  "citations": [
+    "ONNX specification: https://onnx.ai/",
+    "ONNX Runtime: https://onnxruntime.ai/",
+    "PyTorch ONNX: https://pytorch.org/docs/stable/onnx.html"
+  ],
+  "class_levels": [
+    "negative",
+    "positive"
+  ],
+  "exporter_mode": "torchscript-legacy-onnx",
+  "format": "onnx",
+  "input": {
+    "dtype": "float32",
+    "dynamic_axes": {
+      "0": "batch"
+    },
+    "name": "signal",
+    "shape": [
+      "batch",
+      2,
+      32
+    ]
+  },
+  "input_contract": {
+    "channel_ids": [
+      "C3",
+      "C4"
+    ],
+    "dtype": "float32",
+    "n_channels": 2,
+    "n_time": 32,
+    "stride_samples": 32,
+    "window_samples": 32
+  },
+  "ir_version": 8,
+  "model_spec": {
+    "architecture": "cnn1d",
+    "citations": [],
+    "eegnet_variant": null,
+    "hyperparameters": {
+      "dropout": 0,
+      "hidden": 4,
+      "kernel1": 7,
+      "kernel2": 5,
+      "pool": 2
+    },
+    "libtorch_version": "2.8.0",
+    "n_channels": 2,
+    "n_outputs": 2,
+    "n_time": 32,
+    "parameter_count": 270,
+    "sampling_rate": null,
+    "seed": 1029,
+    "task": "classification",
+    "torch_version": "0.17.0"
+  },
+  "n_outputs": 2,
+  "normalization_method": "zscore",
+  "normalization_stats": {
+    "center": [
+      -0.25098039215686274,
+      0.25098039215686274
+    ],
+    "channel_ids": [
+      "C3",
+      "C4"
+    ],
+    "method": "zscore",
+    "scale": [
+      1.1317242121762661,
+      1.1317242121762661
+    ],
+    "zero_scale": [
+      false,
+      false
+    ]
+  },
+  "onnx_sha256": "5a872d1221c20944717ff4f8e7932a7510ad5250c450234f692908c130404da3",
+  "onnx_size_bytes": 2187,
+  "opset": 17,
+  "output": {
+    "dtype": "float32",
+    "dynamic_axes": {
+      "0": "batch"
+    },
+    "name": "output",
+    "shape": [
+      "batch",
+      2
+    ]
+  },
+  "package_versions": {
+    "PhysioML": "0.3.0",
+    "luz": "0.5.2",
+    "reticulate": "1.46.0",
+    "torch": "0.17.0"
+  },
+  "producer_name": "pytorch",
+  "producer_version": "2.8.0",
+  "schema_version": "1.0.0",
+  "task": "classification"
+}

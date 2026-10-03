@@ -1,0 +1,12 @@
+Schema: 1
+Generator: data-raw/generate-feature-reference.R
+Creation-Date: 2026-07-29
+Rcatch22-Version: 0.2.5
+Vector-Types: deterministic-noise,periodic,trend,heavy-tail
+Vector-Length: 256
+Catch22-Backend: official Rcatch22 C-backed implementation
+Synthetic-Split: 30 TRAIN and 20 TEST cases; one channel; 150 samples
+Synthetic-License: MIT package fixture
+UCR-Data-Included: false
+UCR-Data-Note: redistribution terms are not asserted; the shipped split is deterministic synthetic parity data
+Sources: https://doi.org/10.1007/s10618-019-00647-x; https://CRAN.R-project.org/package=Rcatch22; https://doi.org/10.1007/s10618-020-00701-z; https://doi.org/10.1145/3447548.3467231

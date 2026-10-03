@@ -1,0 +1,67 @@
+Package: PhysioML
+Title: Leakage-Aware Machine Learning for Physiological Time Series
+Version: 0.4.2
+Authors@R:
+    person(given = "Yusuke",
+           family = "Matsui",
+           role = c("aut", "cre"),
+           email = "mail.to.matsui@gmail.com")
+Description: Provides leakage-aware, reproducible feature transforms and
+    reference deep-learning workflows for
+    physiological time series stored in PhysioExperiment objects. Canonical
+    catch22 characteristics are computed through the official R backend, while
+    ROCKET and MiniRocket transforms use guarded optional Python backends.
+    Guarded optional torch and luz backends provide case-aware datasets,
+    compact neural architectures, training, and prediction. Explicit contracts
+    preserve case, channel, feature, normalization, backend, and model
+    provenance without claiming clinical validation. Named transfer-learning
+    policies, leakage-safe CORAL alignment, and immutable hash-verified
+    foundation-model caches provide bounded reuse across domains.
+Depends:
+    R (>= 4.2),
+    PhysioExperiment (>= 2.0.0)
+Imports:
+    digest,
+    jsonlite,
+    methods,
+    S4Vectors,
+    SummarizedExperiment,
+    stats
+Suggests:
+    PhysioCore,
+    Rcatch22,
+    reticulate,
+    torch,
+    luz,
+    testthat (>= 3.2.0),
+    knitr,
+    rmarkdown
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Collate:
+    'PhysioML-package.R'
+    'feature-input.R'
+    'features-catch22.R'
+    'features-rocket.R'
+    'reduced-features.R'
+    'torch-input.R'
+    'torch-dataset.R'
+    'torch-models.R'
+    'torch-train.R'
+    'torch-predict.R'
+    'onnx-contract.R'
+    'onnx-export.R'
+    'onnx-import.R'
+    'onnx-predict.R'
+    'transfer.R'
+    'domain-adapt.R'
+    'foundation-cache.R'
+    'foundation.R'
+    'zzz.R'
+URL: https://github.com/x-biosignal/PhysioML, https://x-biosignal.r-universe.dev/PhysioML, https://x-biosignal.github.io/PhysioML/
+BugReports: https://github.com/x-biosignal/PhysioML/issues
+Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

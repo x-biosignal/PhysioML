@@ -1,0 +1,10 @@
+Schema-Version: 1
+Source: Package-owned deterministic arrays
+License: MIT
+Generated: 2026-07-29
+Python-Generator: Python standard library
+PyTorch-Version: not-used
+Classification-Epochs: 10
+Classification-Accuracy-Threshold: 0.95
+Regression-Epochs: 20
+Regression-RMSE-Threshold: 0.3
