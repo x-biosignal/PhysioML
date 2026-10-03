@@ -1,7 +1,7 @@
 # PhysioML: leakage-aware machine learning for physiological time series
 
 Leakage-aware catch22, ROCKET, and MiniRocket transforms for
-[`PhysioCore::PhysioExperiment()`](https://x-biosignal.r-universe.dev/PhysioExperiment/reference/PhysioExperiment.html)
+[`PhysioExperiment::PhysioExperiment()`](https://x-biosignal.r-universe.dev/PhysioExperiment/reference/PhysioExperiment.html)
 objects. Fitted convolution transforms are persisted as validated raw
 payloads rather than live Python pointers. Optional torch and luz
 workflows provide case-aware window Datasets, compact reference neural
@@ -28,7 +28,3 @@ Useful links:
 ## Author
 
 **Maintainer**: Yusuke Matsui <mail.to.matsui@gmail.com>
-
-Authors:
-
-- Yusuke Matsui <mail.to.matsui@gmail.com>

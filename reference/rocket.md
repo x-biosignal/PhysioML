@@ -80,3 +80,21 @@ Dempster A, Petitjean F, Webb GI (2020). ROCKET: Exceptionally fast and
 accurate time series classification using random convolutional kernels.
 *Data Mining and Knowledge Discovery*, 34, 1454-1495.
 [doi:10.1007/s10618-020-00701-z](https://doi.org/10.1007/s10618-020-00701-z)
+
+## Examples
+
+``` r
+arr <- array(stats::rnorm(60 * 2 * 4), dim = c(60, 2, 4))
+pe <- PhysioExperiment::PhysioExperiment(
+  assays = list(raw = arr),
+  colData = S4Vectors::DataFrame(label = c("C3", "C4")),
+  samplingRate = 100
+)
+# \donttest{
+# The transform needs a caller-managed Python environment with NumPy and aeon.
+fit <- rocket(pe, n_kernels = 50)
+#> Error: the active reticulate Python lacks required module(s): aeon
+dim(fit$features)
+#> Error: object 'fit' not found
+# }
+```

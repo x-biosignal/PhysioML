@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">PhysioML</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,12 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/leakage-aware-ml.html">Leakage-aware features and subject-safe splits</a></li>
+  </ul>
+</li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item dropdown">
@@ -84,6 +90,28 @@
 <p>Deep-learning functions require the optional R packages <code>torch</code> and <code>luz</code> plus a caller-installed LibTorch runtime. Install those dependencies explicitly before use. PhysioML never calls <code><a href="https://torch.mlverse.org/docs/reference/install_torch.html" class="external-link">torch::install_torch()</a></code>, downloads weights, or selects an accelerator from package code.</p>
 </div>
 <div class="section level2">
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<p>PhysioML reads assays as <code>time x channel x case</code>, preserving channel labels and case IDs. Building that input contract needs no optional backend:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/x-biosignal/PhysioML" class="external-link">PhysioML</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">peCases</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n_case</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">256</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">n_case</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">256</span>, <span class="fl">2</span>, <span class="va">n_case</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://x-biosignal.r-universe.dev/PhysioExperiment/reference/PhysioExperiment.html" class="external-link">PhysioExperiment</a></span><span class="op">(</span></span>
+<span>    assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>raw <span class="op">=</span> <span class="va">a</span><span class="op">)</span>, samplingRate <span class="op">=</span> <span class="fl">128</span>,</span>
+<span>    colData <span class="op">=</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html" class="external-link">DataFrame</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C3"</span>, <span class="st">"C4"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">train_pe</span> <span class="op">&lt;-</span> <span class="fu">peCases</span><span class="op">(</span><span class="fl">6</span><span class="op">)</span></span>
+<span><span class="va">test_pe</span> <span class="op">&lt;-</span> <span class="fu">peCases</span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">train_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rest"</span>, <span class="st">"task"</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">valid_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rest"</span>, <span class="st">"task"</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">train_pe</span></span></code></pre></div>
+<p>The feature, dataset, model, and export workflows below call the optional backends noted above (<code>reticulate</code> with aeon, or <code>torch</code>/<code>luz</code>). Each is guarded so it runs only when that backend is installed, and reuses the objects built here.</p>
+</div>
+<div class="section level2">
 <h2 id="input-and-output-contracts">Input and output contracts<a class="anchor" aria-label="anchor" href="#input-and-output-contracts"></a>
 </h2>
 <p>PhysioML interprets assays as <code>time x channel</code> for one case or <code>time x channel x case</code> for multiple cases. Channel labels and case IDs are preserved exactly. Inputs must be numeric, finite, equal length, and at least 10 samples for catch22 or nine samples for convolution transforms. Missing values, unequal-length series, implicit resampling, padding, and channel averaging are not supported.</p>
@@ -94,32 +122,36 @@
 <h2 id="leakage-boundary">Leakage boundary<a class="anchor" aria-label="anchor" href="#leakage-boundary"></a>
 </h2>
 <p>Fit a convolution transform on training cases, then reuse its persistent model for validation or test cases:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/minirocket.html">minirocket</a></span><span class="op">(</span><span class="va">train_pe</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">test_features</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/minirocket.html">minirocket</a></span><span class="op">(</span><span class="va">test_pe</span>, model <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"reticulate"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/minirocket.html">minirocket</a></span><span class="op">(</span><span class="va">train_pe</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span>  <span class="va">test_features</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/minirocket.html">minirocket</a></span><span class="op">(</span><span class="va">test_pe</span>, model <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Do not fit the transform on all cases before cross-validation.</p>
 </div>
 <div class="section level2">
 <h2 id="torch-dataset-contract">Torch Dataset contract<a class="anchor" aria-label="anchor" href="#torch-dataset-contract"></a>
 </h2>
 <p>Split patients or cases before windowing or normalization. Fit a training Dataset, then reuse its frozen channel-wise statistics:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/peDataset.html">peDataset</a></span><span class="op">(</span></span>
-<span>  <span class="va">train_pe</span>,</span>
-<span>  targets <span class="op">=</span> <span class="va">train_labels</span>,</span>
-<span>  window_samples <span class="op">=</span> <span class="fl">256</span>,</span>
-<span>  stride_samples <span class="op">=</span> <span class="fl">128</span>,</span>
-<span>  normalization <span class="op">=</span> <span class="st">"zscore"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">valid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/peDataset.html">peDataset</a></span><span class="op">(</span></span>
-<span>  <span class="va">valid_pe</span>,</span>
-<span>  targets <span class="op">=</span> <span class="va">valid_labels</span>,</span>
-<span>  window_samples <span class="op">=</span> <span class="fl">256</span>,</span>
-<span>  stride_samples <span class="op">=</span> <span class="fl">128</span>,</span>
-<span>  normalization <span class="op">=</span> <span class="st">"zscore"</span>,</span>
-<span>  normalization_stats <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">contract</span><span class="op">$</span><span class="va">normalization_stats</span>,</span>
-<span>  class_levels <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">contract</span><span class="op">$</span><span class="va">class_levels</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"torch"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/peDataset.html">peDataset</a></span><span class="op">(</span></span>
+<span>    <span class="va">train_pe</span>,</span>
+<span>    targets <span class="op">=</span> <span class="va">train_labels</span>,</span>
+<span>    window_samples <span class="op">=</span> <span class="fl">256</span>,</span>
+<span>    stride_samples <span class="op">=</span> <span class="fl">128</span>,</span>
+<span>    normalization <span class="op">=</span> <span class="st">"zscore"</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">valid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/peDataset.html">peDataset</a></span><span class="op">(</span></span>
+<span>    <span class="va">test_pe</span>,</span>
+<span>    targets <span class="op">=</span> <span class="va">valid_labels</span>,</span>
+<span>    window_samples <span class="op">=</span> <span class="fl">256</span>,</span>
+<span>    stride_samples <span class="op">=</span> <span class="fl">128</span>,</span>
+<span>    normalization <span class="op">=</span> <span class="st">"zscore"</span>,</span>
+<span>    normalization_stats <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">contract</span><span class="op">$</span><span class="va">normalization_stats</span>,</span>
+<span>    class_levels <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">contract</span><span class="op">$</span><span class="va">class_levels</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Items are <code>channel x time</code>; DataLoader batches are <code>batch x channel x time</code>, including a batch of one. Windows are complete, case-major, and never cross a case boundary. Classification targets are zero-based <code>torch_long</code> values with a reversible label table. Regression targets and inputs are <code>torch_float32</code>. Targets are never appended to inputs.</p>
 <p>Z-score scale is the population standard deviation. Robust scale is <code>1.4826 * median(abs(x - median(x)))</code>. A constant training channel receives scale one and a typed diagnostic. Passing all cases to <code><a href="reference/peDataset.html">peDataset()</a></code> and splitting its windows afterward leaks normalization information and can put one patient’s windows in both training and validation.</p>
 </div>
@@ -134,15 +166,18 @@
 <li>LSTM explicitly permutes to <code>batch x time x channel</code> and uses the final hidden representation. Bidirectionality must be requested explicitly.</li>
 </ul>
 <p>Classification modules return logits; softmax is applied only for probability prediction. <code><a href="reference/trainModel.html">trainModel()</a></code> uses Adam through luz, requires caller-supplied case-disjoint validation, never creates a row-level split, and rejects independently fitted validation normalization. The initial implementation uses CPU and <code>num_workers = 0</code>; it restores caller R and torch RNG states on success and error. Accelerator runs are not claimed to be bitwise reproducible.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/trainModel.html">trainModel</a></span><span class="op">(</span></span>
-<span>  <span class="va">train</span>,</span>
-<span>  <span class="va">valid</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"cnn1d"</span>,</span>
-<span>  epochs <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  seed <span class="op">=</span> <span class="fl">42</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">probability</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/predictModel.html">predictModel</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">valid</span>, type <span class="op">=</span> <span class="st">"probability"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"torch"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"luz"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/trainModel.html">trainModel</a></span><span class="op">(</span></span>
+<span>    <span class="va">train</span>,</span>
+<span>    <span class="va">valid</span>,</span>
+<span>    model <span class="op">=</span> <span class="st">"cnn1d"</span>,</span>
+<span>    epochs <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>    seed <span class="op">=</span> <span class="fl">42</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">probability</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/predictModel.html">predictModel</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">valid</span>, type <span class="op">=</span> <span class="st">"probability"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Prediction runs with gradients disabled and evaluation mode enabled. Channel order, time width, task, dtype, class mapping, and frozen normalization must match training exactly.</p>
 </div>
 <div class="section level2">
@@ -152,10 +187,15 @@
 <pre class="text"><code>R torch module -&gt; TorchScript -&gt; Python PyTorch -&gt; ONNX</code></pre>
 <p>The initial exporter uses PyTorch’s legacy TorchScript ONNX path deliberately; it does not rebuild an R architecture in Python. R LibTorch and Python torch must have the same major/minor version. Export uses float32 <code>batch x channel x time</code> input named <code>signal</code> and float32 <code>batch x output</code> logits named <code>output</code>, opset 17 by default. Channel, time, and output dimensions remain fixed. EEGNet, CNN1D, and TCN support a dynamic batch axis. R torch’s implicit LSTM initial state is traced at a fixed batch width, so LSTM export rejects <code>dynamic_batch = TRUE</code> and supports the validated fixed batch width of two.</p>
 <p>Each graph is checked with ONNX, run through ONNX Runtime’s <code>CPUExecutionProvider</code> with provider fallback disabled, and compared to the R torch logits before landing. The maximum absolute and relative errors must both be at most <code>1e-4</code>. The graph and canonical JSON model card are landed as a pair:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/exportONNX.html">exportONNX</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"model.onnx"</span><span class="op">)</span></span>
-<span><span class="va">portable</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/importONNX.html">importONNX</a></span><span class="op">(</span><span class="st">"model.onnx"</span><span class="op">)</span></span>
-<span><span class="va">logits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/onnxPredict.html">onnxPredict</a></span><span class="op">(</span><span class="va">portable</span>, <span class="va">prediction_data</span>, type <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"torch"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"luz"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"reticulate"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">onnx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"model.onnx"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/exportONNX.html">exportONNX</a></span><span class="op">(</span><span class="va">fit</span>, <span class="va">onnx_path</span><span class="op">)</span></span>
+<span>  <span class="va">portable</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/importONNX.html">importONNX</a></span><span class="op">(</span><span class="va">onnx_path</span><span class="op">)</span></span>
+<span>  <span class="va">logits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/onnxPredict.html">onnxPredict</a></span><span class="op">(</span><span class="va">portable</span>, <span class="va">test_pe</span>, type <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p><code><a href="reference/importONNX.html">importONNX()</a></code> retains graph bytes and the validated card, not a Python <code>InferenceSession</code>, so the result survives <code><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS()</a></code> and a fresh R process. <code><a href="reference/onnxPredict.html">onnxPredict()</a></code> recreates a CPU session for each call and requires the exact training channel order, time width, task, class mapping, dtype, and frozen normalization statistics. It never fits normalization or sends targets to ONNX Runtime.</p>
 <p>Python torch, ONNX, and ONNX Runtime are caller-managed optional dependencies. PhysioML does not install them or select a Python environment. ONNX avoids Python pickle loading during import, but an untrusted graph can still target parser/runtime vulnerabilities or consume excessive resources. The model-card SHA-256 proves byte integrity, not trust or clinical validity.</p>
 </div>
@@ -163,15 +203,18 @@
 <h2 id="transfer-learning-and-domain-alignment">Transfer learning and domain alignment<a class="anchor" aria-label="anchor" href="#transfer-learning-and-domain-alignment"></a>
 </h2>
 <p><code><a href="reference/freezeLayers.html">freezeLayers()</a></code> clones a fitted R torch model and selects parameters by their exact names. Prefix selection is component-aware. The default architecture registry freezes the feature extractor and leaves only <code>classifier.*</code> trainable. <code><a href="reference/fineTune.html">fineTune()</a></code> passes exactly the resulting trainable tensors to Adam. Frozen modules remain in evaluation mode, so batch-normalization buffers do not drift during a linear probe.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">frozen</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/freezeLayers.html">freezeLayers</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="va">adapted</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fineTune.html">fineTune</a></span><span class="op">(</span></span>
-<span>  <span class="va">frozen</span>,</span>
-<span>  <span class="va">target_train</span>,</span>
-<span>  <span class="va">target_valid</span>,</span>
-<span>  strategy <span class="op">=</span> <span class="st">"partial"</span>,</span>
-<span>  unfreeze <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"conv2"</span>, <span class="st">"bn2"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"torch"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"luz"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">frozen</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/freezeLayers.html">freezeLayers</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span>  <span class="va">adapted</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fineTune.html">fineTune</a></span><span class="op">(</span></span>
+<span>    <span class="va">frozen</span>,</span>
+<span>    <span class="va">train</span>,</span>
+<span>    <span class="va">valid</span>,</span>
+<span>    strategy <span class="op">=</span> <span class="st">"partial"</span>,</span>
+<span>    unfreeze <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"conv2"</span>, <span class="st">"bn2"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Target normalization is fitted only on the target training split and then reused unchanged by validation and test datasets. Case IDs must be disjoint. The source model and caller RNG states are not mutated.</p>
 <p><code><a href="reference/domainAdapt.html">domainAdapt()</a></code> implements CORAL for a training-source matrix <code>Xs</code> and an explicitly designated unlabeled target adaptation matrix <code>Xt</code>:</p>
 <pre class="text"><code>A   = (cov(Xs) + lambda I)^(-1/2) (cov(Xt) + lambda I)^(1/2)

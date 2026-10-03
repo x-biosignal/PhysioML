@@ -92,3 +92,26 @@ A path-free, serializable `physio_foundation_embedding`.
 Stable dimensions are promised only for one exact model, revision, and
 preprocessing contract. The output is not a clinical prediction and does
 not establish fairness, causal invariance, or domain invariance.
+
+## Examples
+
+``` r
+arr <- array(stats::rnorm(400 * 2 * 2), dim = c(400, 2, 2))
+pe <- PhysioExperiment::PhysioExperiment(
+  assays = list(raw = arr),
+  colData = S4Vectors::DataFrame(label = c("C3", "C4"), unit = "uV"),
+  samplingRate = 200
+)
+# \donttest{
+# Needs a pinned revision, the expected manifest hash, a caller-managed
+# Python env, and (on first use) explicit download consent.
+emb <- foundationEmbed(
+  pe,
+  model = "moment",
+  revision = "411e288267f82cce86296dbe4d6c8bc533cc162f",
+  manifest_sha256 = strrep("0", 64), # replace with the real manifest hash
+  allow_download = TRUE
+)
+#> Error: MOMENT official adapter is not CPU-verified at revision 411e288267f82cce86296dbe4d6c8bc533cc162f; run the recorded provider preflight before enabling it
+# }
+```

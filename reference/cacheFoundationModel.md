@@ -61,3 +61,23 @@ cacheFoundationModel(
 ## Value
 
 Invisibly, path-free cache provenance.
+
+## Examples
+
+``` r
+# \donttest{
+# A first download needs explicit consent, the exact pinned revision, and the
+# expected canonical manifest hash; it also needs a caller-managed Python env.
+cacheFoundationModel(
+  model = "moment",
+  revision = "411e288267f82cce86296dbe4d6c8bc533cc162f",
+  manifest_sha256 = strrep("0", 64), # replace with the real manifest hash
+  cache_dir = tempfile("physioml-cache"),
+  allow_download = TRUE,
+  license_accepted = TRUE
+)
+#> Downloading uv...
+#> Done!
+#> Error: the Python module `huggingface_hub` is required in the active environment
+# }
+```

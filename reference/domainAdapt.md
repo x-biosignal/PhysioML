@@ -40,3 +40,16 @@ domainAdapt(
 ## Value
 
 A matrix, or a plain list containing aligned source data and model.
+
+## Examples
+
+``` r
+set.seed(1)
+feat <- c("f1", "f2", "f3")
+source <- matrix(stats::rnorm(30), ncol = 3, dimnames = list(NULL, feat))
+target <- matrix(stats::rnorm(30, mean = 1), ncol = 3,
+                 dimnames = list(NULL, feat))
+fit <- domainAdapt(source, target)
+fit$diagnostics$source_mean_residual
+#> [1] 0
+```

@@ -29,3 +29,13 @@ foundationCacheInfo(
 ## Value
 
 A path-free data frame, one row per READY entry.
+
+## Examples
+
+``` r
+# An empty cache root returns a zero-row inventory, offline.
+foundationCacheInfo(cache_dir = tempfile("physioml-cache"))
+#> [1] adapter         model_id        revision        manifest_sha256
+#> [5] asset_count     asset_bytes     verified       
+#> <0 rows> (or 0-length row.names)
+```

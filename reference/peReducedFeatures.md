@@ -52,3 +52,20 @@ peReducedFeatures(
 A numeric matrix with class `physio_feature_matrix`. Attributes preserve
 exact case identity, feature provenance, typed diagnostics, and the
 fitted model when applicable.
+
+## Examples
+
+``` r
+arr <- array(stats::rnorm(40 * 2 * 3), dim = c(40, 2, 3))
+pe <- PhysioExperiment::PhysioExperiment(
+  assays = list(raw = arr),
+  colData = S4Vectors::DataFrame(label = c("C3", "C4")),
+  samplingRate = 100
+)
+# catch22 features need the optional Rcatch22 backend.
+if (requireNamespace("Rcatch22", quietly = TRUE)) {
+  features <- peReducedFeatures(pe, method = "catch22")
+  dim(features)
+}
+#> [1]  3 44
+```

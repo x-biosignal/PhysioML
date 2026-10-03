@@ -27,6 +27,36 @@ dependencies explicitly before use. PhysioML never calls
 [`torch::install_torch()`](https://torch.mlverse.org/docs/reference/install_torch.html),
 downloads weights, or selects an accelerator from package code.
 
+## Quick start
+
+PhysioML reads assays as `time x channel x case`, preserving channel
+labels and case IDs. Building that input contract needs no optional
+backend:
+
+``` r
+
+library(PhysioML)
+
+set.seed(1)
+peCases <- function(n_case) {
+  a <- array(rnorm(256 * 2 * n_case), dim = c(256, 2, n_case))
+  PhysioExperiment(
+    assays = list(raw = a), samplingRate = 128,
+    colData = S4Vectors::DataFrame(label = c("C3", "C4"))
+  )
+}
+train_pe <- peCases(6)
+test_pe <- peCases(3)
+train_labels <- factor(rep(c("rest", "task"), length.out = 6))
+valid_labels <- factor(rep(c("rest", "task"), length.out = 3))
+train_pe
+```
+
+The feature, dataset, model, and export workflows below call the
+optional backends noted above (`reticulate` with aeon, or
+`torch`/`luz`). Each is guarded so it runs only when that backend is
+installed, and reuses the objects built here.
+
 ## Input and output contracts
 
 PhysioML interprets assays as `time x channel` for one case or
@@ -55,8 +85,10 @@ model for validation or test cases:
 
 ``` r
 
-fit <- minirocket(train_pe, seed = 42)
-test_features <- minirocket(test_pe, model = fit$model)
+if (requireNamespace("reticulate", quietly = TRUE)) {
+  fit <- minirocket(train_pe, seed = 42)
+  test_features <- minirocket(test_pe, model = fit$model)
+}
 ```
 
 Do not fit the transform on all cases before cross-validation.
@@ -68,22 +100,24 @@ training Dataset, then reuse its frozen channel-wise statistics:
 
 ``` r
 
-train <- peDataset(
-  train_pe,
-  targets = train_labels,
-  window_samples = 256,
-  stride_samples = 128,
-  normalization = "zscore"
-)
-valid <- peDataset(
-  valid_pe,
-  targets = valid_labels,
-  window_samples = 256,
-  stride_samples = 128,
-  normalization = "zscore",
-  normalization_stats = train$contract$normalization_stats,
-  class_levels = train$contract$class_levels
-)
+if (requireNamespace("torch", quietly = TRUE)) {
+  train <- peDataset(
+    train_pe,
+    targets = train_labels,
+    window_samples = 256,
+    stride_samples = 128,
+    normalization = "zscore"
+  )
+  valid <- peDataset(
+    test_pe,
+    targets = valid_labels,
+    window_samples = 256,
+    stride_samples = 128,
+    normalization = "zscore",
+    normalization_stats = train$contract$normalization_stats,
+    class_levels = train$contract$class_levels
+  )
+}
 ```
 
 Items are `channel x time`; DataLoader batches are
@@ -129,14 +163,17 @@ and error. Accelerator runs are not claimed to be bitwise reproducible.
 
 ``` r
 
-fit <- trainModel(
-  train,
-  valid,
-  model = "cnn1d",
-  epochs = 20,
-  seed = 42
-)
-probability <- predictModel(fit, valid, type = "probability")
+if (requireNamespace("torch", quietly = TRUE) &&
+    requireNamespace("luz", quietly = TRUE)) {
+  fit <- trainModel(
+    train,
+    valid,
+    model = "cnn1d",
+    epochs = 20,
+    seed = 42
+  )
+  probability <- predictModel(fit, valid, type = "probability")
+}
 ```
 
 Prediction runs with gradients disabled and evaluation mode enabled.
@@ -170,9 +207,14 @@ card are landed as a pair:
 
 ``` r
 
-exportONNX(fit, "model.onnx")
-portable <- importONNX("model.onnx")
-logits <- onnxPredict(portable, prediction_data, type = "logit")
+if (requireNamespace("torch", quietly = TRUE) &&
+    requireNamespace("luz", quietly = TRUE) &&
+    requireNamespace("reticulate", quietly = TRUE)) {
+  onnx_path <- file.path(tempdir(), "model.onnx")
+  exportONNX(fit, onnx_path)
+  portable <- importONNX(onnx_path)
+  logits <- onnxPredict(portable, test_pe, type = "logit")
+}
 ```
 
 [`importONNX()`](https://x-biosignal.github.io/PhysioML/reference/importONNX.md)
@@ -207,14 +249,17 @@ during a linear probe.
 
 ``` r
 
-frozen <- freezeLayers(fit)
-adapted <- fineTune(
-  frozen,
-  target_train,
-  target_valid,
-  strategy = "partial",
-  unfreeze = c("conv2", "bn2")
-)
+if (requireNamespace("torch", quietly = TRUE) &&
+    requireNamespace("luz", quietly = TRUE)) {
+  frozen <- freezeLayers(fit)
+  adapted <- fineTune(
+    frozen,
+    train,
+    valid,
+    strategy = "partial",
+    unfreeze = c("conv2", "bn2")
+  )
+}
 ```
 
 Target normalization is fitted only on the target training split and

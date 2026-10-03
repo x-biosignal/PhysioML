@@ -42,3 +42,19 @@ rows.
 [`validateSubjectSplit()`](https://x-biosignal.github.io/PhysioML/reference/validateSubjectSplit.md),
 [`peDataset()`](https://x-biosignal.github.io/PhysioML/reference/peDataset.md),
 [`peReducedFeatures()`](https://x-biosignal.github.io/PhysioML/reference/peReducedFeatures.md)
+
+## Examples
+
+``` r
+# Attach subject identity to a case-by-feature matrix.
+features <- matrix(
+  stats::rnorm(8), nrow = 2,
+  dimnames = list(c("c1", "c2"), c("a", "b", "c", "d"))
+)
+case_data <- data.frame(case_id = c("c1", "c2"), subject_id = c("s1", "s2"))
+labelled <- withCaseData(features, case_data)
+attr(labelled, "case_data")
+#>   case_id subject_id
+#> 1      c1         s1
+#> 2      c2         s2
+```

@@ -68,3 +68,25 @@ peDataset(
 ## Value
 
 A `physio_torch_dataset`.
+
+## Examples
+
+``` r
+# Prepare the input offline: a time x channel x case assay with channel labels.
+arr <- array(stats::rnorm(50 * 2 * 6), dim = c(50, 2, 6))
+pe <- PhysioExperiment::PhysioExperiment(
+  assays = list(raw = arr),
+  colData = S4Vectors::DataFrame(label = c("C3", "C4")),
+  samplingRate = 100
+)
+# Building the Dataset itself needs the optional torch backend.
+if (requireNamespace("torch", quietly = TRUE)) {
+  ds <- peDataset(
+    pe,
+    targets = rep(c("rest", "task"), 3),
+    task = "classification",
+    class_levels = c("rest", "task")
+  )
+}
+#> Error: the R package `torch` is installed but LibTorch is unavailable; install it explicitly with `torch::install_torch()`
+```

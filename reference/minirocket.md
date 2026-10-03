@@ -63,3 +63,21 @@ A `physio_rocket_transform`; see
 Dempster A, Schmidt DF, Webb GI (2021). MiniRocket: A Very Fast (Almost)
 Deterministic Transform for Time Series Classification.
 [doi:10.1145/3447548.3467231](https://doi.org/10.1145/3447548.3467231)
+
+## Examples
+
+``` r
+arr <- array(stats::rnorm(60 * 2 * 4), dim = c(60, 2, 4))
+pe <- PhysioExperiment::PhysioExperiment(
+  assays = list(raw = arr),
+  colData = S4Vectors::DataFrame(label = c("C3", "C4")),
+  samplingRate = 100
+)
+# \donttest{
+# The transform needs a caller-managed Python environment with NumPy and aeon.
+fit <- minirocket(pe, n_kernels = 84)
+#> Error: the active reticulate Python lacks required module(s): aeon
+dim(fit$features)
+#> Error: object 'fit' not found
+# }
+```

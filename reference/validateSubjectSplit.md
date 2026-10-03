@@ -22,3 +22,11 @@ validateSubjectSplit(train, valid)
 
 Invisibly `TRUE`, or an error for shared cases or subjects, invalid
 labels, or inconsistent participant aliases.
+
+## Examples
+
+``` r
+train <- data.frame(case_id = c("c1", "c2"), subject_id = c("s1", "s2"))
+valid <- data.frame(case_id = c("c3", "c4"), subject_id = c("s3", "s4"))
+validateSubjectSplit(train, valid)
+```

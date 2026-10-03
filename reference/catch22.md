@@ -20,7 +20,7 @@ catch22(x, assay_name = NULL, channels = NULL, cases = NULL, catch24 = FALSE)
 - assay_name:
 
   `NULL` for
-  [`PhysioCore::defaultAssay()`](https://x-biosignal.r-universe.dev/PhysioExperiment/reference/defaultAssay.html)
+  [`PhysioExperiment::defaultAssay()`](https://x-biosignal.r-universe.dev/PhysioExperiment/reference/defaultAssay.html)
   or an exact assay name.
 
 - channels:
@@ -68,7 +68,7 @@ Characteristics. R package.
 ``` r
 if (requireNamespace("Rcatch22", quietly = TRUE)) {
   values <- matrix(sin(seq(0, 8 * pi, length.out = 100)), 100, 1)
-  pe <- PhysioCore::PhysioExperiment(
+  pe <- PhysioExperiment::PhysioExperiment(
     assays = list(raw = values),
     colData = S4Vectors::DataFrame(label = "signal"),
     samplingRate = 100

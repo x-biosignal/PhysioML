@@ -36,3 +36,15 @@ importONNX(
 ## Value
 
 A persistent `physio_onnx_model`.
+
+## Examples
+
+``` r
+# \donttest{
+# Reads a governed graph plus its canonical JSON model card (ONNX Runtime).
+path <- tempfile(fileext = ".onnx")
+# `path` and paste0(path, ".json") are produced by exportONNX().
+model <- importONNX(path)
+#> Error: ONNX model card must be a readable regular file
+# }
+```

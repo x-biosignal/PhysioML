@@ -41,3 +41,13 @@ onnxPredict(
 
 The same identity-preserving output shapes as
 [`predictModel()`](https://x-biosignal.github.io/PhysioML/reference/predictModel.md).
+
+## Examples
+
+``` r
+# \donttest{
+# `model` is from importONNX(); `newdata` is a matching peDataset() (CPU ORT).
+onnxPredict(model, newdata, type = "class")
+#> Error: object 'model' not found
+# }
+```
